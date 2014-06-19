@@ -881,13 +881,6 @@ public class SlidingUpPanelLayout extends ViewGroup {
         return expandPanel(1.0f);
     }
 
-    private Runnable expandRunnable = new Runnable() {
-        @Override
-        public void run() {
-            expandPanel();
-        }
-    };
-
     /**
      * Partially expand the sliding panel up to a specific offset
      *
@@ -896,8 +889,12 @@ public class SlidingUpPanelLayout extends ViewGroup {
      */
     public boolean expandPanel(float mSlideOffset) {
         if (mSlideableView == null) {
-            postDelayed(expandRunnable, 1000 / 60);
-            return false;
+            if (mSlideState == SlideState.EXPANDED) {
+                return false;
+            } else {
+                mSlideState = SlideState.EXPANDED;
+                return true;
+            }
         }
         if (mSlideState == SlideState.EXPANDED) return false;
         mSlideableView.setVisibility(View.VISIBLE);
@@ -1131,7 +1128,11 @@ public class SlidingUpPanelLayout extends ViewGroup {
     public void onRestoreInstanceState(Parcelable state) {
         SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
-        mSlideState = ss.mSlideState;
+        // if panel was opened after creation onRestoreInstanceState will overwrite it's state
+        // so we overwrite it only is mSlideState has default value
+        if (mSlideState == SlideState.COLLAPSED) {
+            mSlideState = ss.mSlideState;
+        }
     }
 
     private class DragHelperCallback extends ViewDragHelper.Callback {
