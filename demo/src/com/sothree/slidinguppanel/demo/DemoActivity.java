@@ -82,7 +82,7 @@ public class DemoActivity extends Activity {
         });
 
 
-        boolean actionBarHidden = savedInstanceState != null && savedInstanceState.getBoolean(SAVED_STATE_ACTION_BAR_HIDDEN, false);
+        boolean actionBarHidden = (savedInstanceState != null && savedInstanceState.getBoolean(SAVED_STATE_ACTION_BAR_HIDDEN, false)) || mLayout.isPanelExpanded();
         if (actionBarHidden) {
             int actionBarHeight = getActionBarHeight();
             setActionBarTranslation(-actionBarHeight);//will "hide" an ActionBar

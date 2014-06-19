@@ -878,6 +878,17 @@ public class SlidingUpPanelLayout extends ViewGroup {
      * @return true if the pane was slideable and is now expanded/in the process of expading
      */
     public boolean expandPanel() {
+        if (mSlideableView == null) {
+            if (mSlideState == SlideState.EXPANDED) {
+                return false;
+            } else {
+                if (!mIsSlidingEnabled) {
+                    return false;
+                }
+                mSlideState = SlideState.EXPANDED;
+                return true;
+            }
+        }
         return expandPanel(1.0f);
     }
 
@@ -889,12 +900,7 @@ public class SlidingUpPanelLayout extends ViewGroup {
      */
     public boolean expandPanel(float mSlideOffset) {
         if (mSlideableView == null) {
-            if (mSlideState == SlideState.EXPANDED) {
-                return false;
-            } else {
-                mSlideState = SlideState.EXPANDED;
-                return true;
-            }
+            return false;
         }
         if (mSlideState == SlideState.EXPANDED) return false;
         mSlideableView.setVisibility(View.VISIBLE);
